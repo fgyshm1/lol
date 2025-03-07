@@ -1,16 +1,17 @@
 #!/bin/bash
 
-# Start the Xfce desktop environment
-startxfce4 &
+# Set the user environment variable
+export USER=root
+
+# Install dependencies if needed
+apt-get update && apt-get install -y novnc xserver-xorg-video-dummy xfce4 tightvncserver
+
+# Start Xvfb (Virtual X server) with a virtual display
+Xvfb :0 -screen 0 1024x768x16 &
 
 # Start the VNC server
-tightvncserver :1 -geometry 1280x720 -depth 24
+tightvncserver :0
 
-# Start the noVNC web proxy (with SSL certificates if you have them)
-mkdir -p /etc/ssl/novnc
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout /etc/ssl/novnc/novnc.key -out /etc/ssl/novnc/novnc.crt \
-  -subj "/CN=localhost"
-
-# Run noVNC to connect to the VNC server and serve the web interface on port 6080
-/usr/share/novnc/utils/novnc_proxy --vnc localhost:5901 --cert=/etc/ssl/novnc/novnc.crt --key=/etc/ssl/novnc/novnc.key --web /usr/share/novnc/ --listen 6080
+# Start NoVNC (web-based VNC)
+export DISPLAY=:0
+/usr/share/novnc/utils/novnc_proxy --vnc localhost:5900 --listen 6080
