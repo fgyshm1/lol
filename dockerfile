@@ -1,26 +1,29 @@
-FROM ubuntu:latest
+# Use a base image with Ubuntu (or Debian) as the base
+FROM ubuntu:20.04
 
-# Install required packages
-RUN apt update && apt install -y \
-    x11vnc xvfb xfce4 xfce4-terminal tightvncserver \
-    novnc websockify curl wget nano sudo
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Set up a user (to avoid running everything as root)
-RUN useradd -m -s /bin/bash linuxuser && \
-    echo "linuxuser:linux" | chpasswd && \
-    adduser linuxuser sudo
+# Update and install necessary packages (VNC, Xfce, noVNC, OpenSSL, etc.)
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+    tightvncserver \
+    xfce4 \
+    x11vnc \
+    novnc \
+    websockify \
+    openssl \
+    curl \
+    && apt-get clean
 
-# Set up VNC password (default: "linux")
-RUN mkdir -p /home/linuxuser/.vnc && \
-    echo "linux" | vncpasswd -f > /home/linuxuser/.vnc/passwd && \
-    chmod 600 /home/linuxuser/.vnc/passwd
+# Set working directory
+WORKDIR /app
 
-# Copy start script and set execute permissions
+# Copy start.sh into the container and give it execution permissions
 COPY start.sh /start.sh
-RUN chmod +x /start.sh  # Ensure script is executable inside the container
+RUN chmod +x /start.sh
 
-# Expose noVNC port
+# Expose the necessary ports
 EXPOSE 6080
 
-# Run the start script
+# Command to run the start.sh script
 CMD ["/start.sh"]
