@@ -15,9 +15,9 @@ RUN mkdir -p /home/linuxuser/.vnc && \
     echo "linux" | vncpasswd -f > /home/linuxuser/.vnc/passwd && \
     chmod 600 /home/linuxuser/.vnc/passwd
 
-# Copy start script
+# Copy start script and set execute permissions
 COPY start.sh /start.sh
-RUN chmod +x /start.sh
+RUN chmod +x /start.sh  # Ensure script is executable inside the container
 
 # Expose noVNC port
 EXPOSE 6080
