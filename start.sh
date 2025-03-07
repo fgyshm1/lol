@@ -3,9 +3,6 @@
 # Set the user environment variable
 export USER=root
 
-# Install dependencies if needed
-apt-get update && apt-get install -y novnc xserver-xorg-video-dummy xfce4 tightvncserver
-
 # Start Xvfb (Virtual X server) with a virtual display
 Xvfb :0 -screen 0 1024x768x16 &
 
