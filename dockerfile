@@ -117,9 +117,8 @@ RUN apt-get update && \
     tzdata && \
     rm -rf /var/lib/apt/lists/*
 
-# Set the time zone to New York
-RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime \
-    && dpkg-reconfigure -f noninteractive tzdata
+# Set the time zone to New York (only once)
+RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 
 # Set the working directory
 WORKDIR /app
@@ -127,7 +126,7 @@ WORKDIR /app
 # Copy your application code into the container (adjust the path)
 COPY . /app
 
-# Expose any ports your application uses (adjust the port number as necessary)
+# Expose port 8080
 EXPOSE 8080
 
 # Set the default command to run your application (adjust as needed)
